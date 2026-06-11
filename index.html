@@ -135,18 +135,24 @@
             <h2>AI 走查</h2>
             <span>OpenAI-compatible</span>
           </div>
-          <label>
-            Base URL
-            <input id="aiBaseUrl" type="url" placeholder="https://api.example.com/v1" />
-          </label>
-          <label>
-            API Key
-            <input id="aiApiKey" type="password" placeholder="sk-..." autocomplete="off" />
-          </label>
-          <label>
-            模型
-            <input id="aiModel" type="text" placeholder="gpt-4o / qwen-vl-max / ..." />
-          </label>
+          <details class="ai-config" id="aiConfigPanel">
+            <summary>
+              <span>模型配置</span>
+              <small id="aiConfigSummary">未配置</small>
+            </summary>
+            <label>
+              Base URL
+              <input id="aiBaseUrl" type="url" placeholder="https://api.example.com/v1" />
+            </label>
+            <label>
+              API Key
+              <input id="aiApiKey" type="password" placeholder="sk-..." autocomplete="off" />
+            </label>
+            <label>
+              模型
+              <input id="aiModel" type="text" placeholder="gpt-4o / qwen-vl-max / ..." />
+            </label>
+          </details>
           <label>
             补充说明
             <textarea id="aiNotes" rows="3" placeholder="例如：忽略系统字体细微差异，重点看卡片高度和底部安全区。"></textarea>

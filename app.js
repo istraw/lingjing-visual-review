@@ -30,6 +30,8 @@ const els = {
   aiApiKey: document.querySelector("#aiApiKey"),
   aiModel: document.querySelector("#aiModel"),
   aiNotes: document.querySelector("#aiNotes"),
+  aiConfigPanel: document.querySelector("#aiConfigPanel"),
+  aiConfigSummary: document.querySelector("#aiConfigSummary"),
   aiTestBtn: document.querySelector("#aiTestBtn"),
   aiReviewBtn: document.querySelector("#aiReviewBtn"),
   aiStatus: document.querySelector("#aiStatus"),
@@ -147,8 +149,10 @@ function loadAISettings() {
     els.aiNotes.value = settings.notes || "";
     if (els.reviewTarget) els.reviewTarget.value = settings.reviewTarget || "auto";
     if (els.previewMode) els.previewMode.value = settings.previewMode || "auto";
+    syncAIConfigPanel();
   } catch {
     localStorage.removeItem(AI_SETTINGS_KEY);
+    syncAIConfigPanel();
   }
 }
 
@@ -162,6 +166,20 @@ function saveAISettings() {
     previewMode: els.previewMode?.value || "auto",
   };
   localStorage.setItem(AI_SETTINGS_KEY, JSON.stringify(settings));
+  syncAIConfigPanel();
+}
+
+function hasRequiredAISettings() {
+  return Boolean(els.aiBaseUrl.value.trim() && els.aiApiKey.value.trim() && els.aiModel.value.trim());
+}
+
+function syncAIConfigPanel() {
+  if (!els.aiConfigPanel) return;
+  const ready = hasRequiredAISettings();
+  els.aiConfigPanel.open = !ready;
+  if (els.aiConfigSummary) {
+    els.aiConfigSummary.textContent = ready ? els.aiModel.value.trim() : "未配置";
+  }
 }
 
 async function loadReviewSkill() {

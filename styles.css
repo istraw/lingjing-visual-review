@@ -495,6 +495,56 @@ canvas {
   background: #fbfcfd;
 }
 
+.ai-config {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  background: #ffffff;
+}
+
+.ai-config summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #303842;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  list-style: none;
+}
+
+.ai-config summary::-webkit-details-marker {
+  display: none;
+}
+
+.ai-config summary::after {
+  content: "展开";
+  color: var(--brand);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ai-config[open] summary {
+  margin-bottom: 10px;
+}
+
+.ai-config[open] summary::after {
+  content: "收起";
+}
+
+.ai-config small {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .ai-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
