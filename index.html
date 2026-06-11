@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>灵镜视觉走查系统</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace">
+        <header class="topbar">
+          <img class="brand-logo" src="./assets/logo.png" alt="灵镜视觉雷达" />
+          <div class="actions">
+            <button class="ghost-button" id="resetBtn" type="button">重置</button>
+          </div>
+        </header>
+
+        <section class="control-grid">
+          <article class="upload-panel">
+            <div class="panel-heading">
+              <h2>设计稿</h2>
+            </div>
+            <label class="dropzone" for="designInput" id="designDrop">
+              <input id="designInput" type="file" accept="image/*" />
+              <span>上传视觉稿截图</span>
+            </label>
+            <div class="detect-card" id="designDetect">上传后自动识别分辨率和 1x 尺寸</div>
+          </article>
+
+          <article class="upload-panel">
+            <div class="panel-heading">
+              <h2>开发截图</h2>
+            </div>
+            <label class="dropzone" for="buildInput" id="buildDrop">
+              <input id="buildInput" type="file" accept="image/*" />
+              <span>上传实现截图</span>
+            </label>
+            <div class="detect-card" id="buildDetect">上传后自动识别设备尺寸和 DPR</div>
+          </article>
+
+          <article class="settings-panel">
+            <div class="panel-heading">
+              <h2>识别设置</h2>
+            </div>
+            <div class="field-row">
+              <label>
+                走查类型
+                <select id="reviewTarget">
+                  <option value="auto">自动判断</option>
+                  <option value="mobile">移动端</option>
+                  <option value="desktop">桌面端</option>
+                </select>
+              </label>
+              <label>
+                预览模式
+                <select id="previewMode">
+                  <option value="auto">自动</option>
+                  <option value="grid">三列对照</option>
+                  <option value="large">大图纵览</option>
+                </select>
+              </label>
+            </div>
+            <p class="settings-note">移动端会自动推断 DPR；桌面端默认按 1x 原始尺寸走查。</p>
+            <input id="colorTolerance" type="hidden" value="18" />
+            <input id="spacingTolerance" type="hidden" value="4" />
+            <input id="fontTolerance" type="hidden" value="3" />
+            <details class="advanced-settings">
+              <summary>高级设置</summary>
+              <div class="field-row">
+                <label>
+                  设计 DPR
+                  <input id="designDpr" type="number" min="1" max="4" step="0.5" value="1" />
+                </label>
+                <label>
+                  开发 DPR
+                  <input id="buildDpr" type="number" min="1" max="4" step="0.5" value="3" />
+                </label>
+              </div>
+              <div class="field-row">
+                <label>
+                  设计宽度
+                  <input id="designBaseWidth" type="number" min="320" max="480" step="1" value="375" />
+                </label>
+                <label>
+                  宽度策略
+                  <select id="widthPolicy">
+                    <option value="adaptive">适配走查</option>
+                    <option value="strict">严格还原</option>
+                  </select>
+                </label>
+              </div>
+            </details>
+          </article>
+        </section>
+
+        <section class="compare-stage is-empty" id="compareStage">
+          <article class="phone-frame">
+            <div class="canvas-title">
+              <strong>设计稿</strong>
+              <span id="designMeta">未上传</span>
+            </div>
+            <canvas id="designCanvas"></canvas>
+          </article>
+
+          <article class="phone-frame">
+            <div class="canvas-title">
+              <div class="title-with-help">
+                <strong>开发截图</strong>
+                <label class="annotation-switch">
+                  <input id="annotationToggle" type="checkbox" checked />
+                  <span>显示标注</span>
+                </label>
+              </div>
+              <span id="buildMeta">未上传</span>
+            </div>
+            <canvas id="buildCanvas"></canvas>
+          </article>
+        </section>
+      </section>
+
+      <aside class="report-panel">
+        <div class="report-heading">
+          <h2>问题列表</h2>
+          <button id="copyReportBtn" type="button">导出 PDF 报告</button>
+        </div>
+
+        <div class="score-card">
+          <span>还原度</span>
+          <strong id="scoreValue">--</strong>
+        </div>
+
+        <section class="ai-panel">
+          <div class="panel-heading">
+            <h2>AI 走查</h2>
+            <span>OpenAI-compatible</span>
+          </div>
+          <label>
+            Base URL
+            <input id="aiBaseUrl" type="url" placeholder="https://api.example.com/v1" />
+          </label>
+          <label>
+            API Key
+            <input id="aiApiKey" type="password" placeholder="sk-..." autocomplete="off" />
+          </label>
+          <label>
+            模型
+            <input id="aiModel" type="text" placeholder="gpt-4o / qwen-vl-max / ..." />
+          </label>
+          <label>
+            补充说明
+            <textarea id="aiNotes" rows="3" placeholder="例如：忽略系统字体细微差异，重点看卡片高度和底部安全区。"></textarea>
+          </label>
+          <div class="ai-actions">
+            <button class="ghost-button" id="aiTestBtn" type="button">测试连接</button>
+            <button class="primary-button" id="aiReviewBtn" type="button">AI 走查</button>
+          </div>
+          <p class="ai-hint">Key 只保存在当前浏览器；部分三方接口可能需要开启 CORS。</p>
+          <div id="aiStatus" class="ai-status">未运行</div>
+          <div id="aiResult" class="ai-result"></div>
+        </section>
+
+        <div id="issueList" class="issue-list">
+          <div class="empty-state">
+            上传设计稿和开发截图后，点击右侧 AI 走查。
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
