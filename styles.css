@@ -116,6 +116,24 @@ button.is-loading {
   padding: 18px;
 }
 
+@media (min-width: 1181px) {
+  body {
+    overflow: hidden;
+  }
+
+  .app-shell {
+    height: 100vh;
+    min-height: 0;
+  }
+
+  .workspace,
+  .report-panel {
+    height: calc(100vh - 36px);
+    overflow: auto;
+    scrollbar-gutter: stable;
+  }
+}
+
 .topbar,
 .report-heading,
 .canvas-title,
