@@ -95,6 +95,7 @@ button.is-loading {
 .app-shell {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 360px;
+  align-items: start;
   gap: 18px;
   min-height: 100vh;
   padding: 18px;
@@ -435,11 +436,7 @@ canvas {
 }
 
 .report-panel {
-  position: sticky;
-  top: 18px;
-  height: calc(100vh - 36px);
   padding: 16px;
-  overflow: auto;
   box-shadow: var(--shadow);
 }
 
@@ -686,7 +683,6 @@ canvas {
   }
 
   .report-panel {
-    position: static;
     height: auto;
   }
 }
