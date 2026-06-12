@@ -134,17 +134,8 @@ button.is-loading {
   }
 
   .report-panel {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  .issue-list {
-    flex: 1 1 auto;
     min-height: 0;
     overflow: auto;
-    padding-right: 4px;
     scrollbar-gutter: stable;
   }
 }
